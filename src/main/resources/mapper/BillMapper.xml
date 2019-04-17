@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bdqn.ssm.dao.BillDao" >
+    <!--分页查询订单详情-->
+    <select id="getBillList" resultMap="billList">
+        select b.*,p.proName from smbms_bill b,smbms_provider p
+        where b.providerId=p.id
+        <if test="productName!=null and productName!=''">
+            and  b.productName like concat('%',#{productName},'%')
+        </if>
+        <if test="queryProviderId!=null and queryProviderId!=''">
+            and b.providerId=#{queryProviderId}
+        </if>
+        <if test="isPayment!=null and isPayment!=''">
+            and isPayment=#{isPayment}
+        </if>
+        order by creationDate desc limit #{pageIndex},#{pageSize}
+    </select>
+    <!--统计总计录数-->
+    <select id="getBillCount" resultType="int">
+        select count(1) from smbms_bill b,smbms_provider p
+        where b.providerId=p.id
+        <if test="productName!=null and productName!=''">
+             and productName like concat('%',#{productName},'%')
+        </if>
+        <if test="queryProviderId!=null and queryProviderId!=''">
+            and providerId=#{queryProviderId}
+        </if>
+        <if test="isPayment!=null and isPayment!=''">
+            and isPayment=#{isPayment}
+        </if>
+    </select>
+    <resultMap id="billList" type="Bill">
+        <id property="id" column="id"></id>
+        <result property="billCode" column="billCode"></result>
+        <result property="productName" column="productName"></result>
+        <result property="productDesc" column="productDesc"></result>
+        <result property="productUnit" column="productUnit"></result>
+        <result property="productCount" column="productCount"></result>
+        <result property="totalPrice" column="totalPrice"></result>
+        <result property="isPayment" column="isPayment"></result>
+        <result property="createBy" column="createBy"></result>
+        <result property="creationDate" column="creationDate"></result>
+        <result property="modifyBy" column="modifyBy"></result>
+        <result property="modifyDate" column="modifyDate"></result>
+        <result property="providerId" column="providerId"></result>
+    </resultMap>
+<!--根据id查询-->
+    <select id="getBillById" resultMap="billList">
+        select * from smbms_bill where id=#{bid}
+    </select>
+    <!--添加-->
+    <insert id="addBill" parameterType="Bill">
+        insert into smbms_bill(billCode,productName,productDesc,
+        productUnit,productCount,totalPrice,isPayment,createdBy,
+        creationDate,modifyBy,modifyDate,providerId)
+        VALUES(#{billCode},#{productName},#{productDesc},
+        #{productUnit},#{productCount},#{totalPrice},#{isPayment},
+        #{createdBy},#{creationDate},#{modifyBy},#{modifyDate},
+        #{providerId})
+    </insert>
+    <!--修改-->
+    <update id="updateBill" parameterType="Bill">
+        update smbms_bill
+        <set>
+            <if test="billCode!=null">
+                billCode=#{billCode,javaType=VARCHAR},
+            </if>
+            <if test="productName!=null">
+                productName=#{productName,javaType=VARCHAR},
+            </if>
+            <if test="productDesc!=null">
+                productDesc=#{productDesc,japvaType=VARCHAR},
+            </if>
+            <if test="productUnit!=null">
+                productUnit=#{productUnit,javaType=VARCHAR},
+            </if>
+            <if test="productCount!=null">
+                productCount=#{productCount,javaType=DECIMAL},
+            </if>
+            <if test="totalPrice!=null">
+                totalPrice=#{totalPrice,javaType=DECIMAL},
+            </if>
+            <if test="isPayment!=null">
+                isPayment=#{isPayment=#{isPsyment,javaType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                createdBy=#{createdBy,javaType=BIGINT},
+            </if>
+            <if test="creationDate!=null">
+                creationDate=#{creationDate,javaType=TIMESTAMP},
+            </if>
+            <if test="modifyBy!=null">
+                modifyBy=#{modifyBy,javaType=BIGINT},
+            </if>
+            <if test="modifyDate!=null">
+                modifyDate=#{modifyDate,javaType=TIMESTAMP},
+            </if>
+            <if test="providerId!=null">
+                providerId=#{providerId,javaType=INTEGER}
+            </if>
+        </set>
+    </update>
+    <!--删除-->
+    <delete id="deleteBill" parameterType="String">
+        delete from smbms_bill where id=#{id}
+    </delete>
+    <!--根据id查询订单记录-->
+    <select id="" resultMap="billList">
+        select * from smbms_bill
+        where
+    </select>
+</mapper>
